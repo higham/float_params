@@ -25,6 +25,9 @@ and the arithmetics supported are
 - IEEE double precision (fp64),
 - IEEE quadruple precision (fp128).
 
+The code was developed in MATLAB R2018b and works with versions at least
+back to R2016b.
+
 License
 -------
 
