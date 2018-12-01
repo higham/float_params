@@ -1,10 +1,10 @@
-function [u,rmins,rmin,rmax,p] = float_params(prec)
+function [u,xmins,xmin,xmax,p] = float_params(prec)
 % FLOAT_PARAMS   Parameters for floating-point arithmetic.
 %   [u,rmins,rmin,rmax,p] = FLOAT_PARAMS(prec) returns 
 %     u:     the unit roundoff,
-%     rmins: the smallest positive floating-point number (subnormal),
-%     rmin:  the smallest positive normalized floating-point number,
-%     rmax:  the largest floating-point number,
+%     xmins: the smallest positive floating-point number (subnormal),
+%     xmin:  the smallest positive normalized floating-point number,
+%     xmax:  the largest floating-point number,
 %     p:     the number of binary digits in the significand (including the
 %            implicit leading bit),
 %   where prec is one of 
@@ -15,7 +15,7 @@ function [u,rmins,rmin,rmax,p] = float_params(prec)
 %    'q', 'quadruple', 'fp128' - IEEE quadruple precision.
 %   With no input and output arguments, FLOAT_PARAMS prints a table showing
 %   all the parameters for all five precisions.
-%   Note: rmax and rmin are not representable in double precison for
+%   Note: rmax and rmin are not representable in double precision for
 %   'quad'.
 
 %   Author: Nicholas J. Higham.
@@ -32,12 +32,12 @@ function [u,rmins,rmin,rmax,p] = float_params(prec)
 
 if nargin < 1 && nargout < 1
    precs = 'bhsdq';
-   fprintf('        u        rmins       rmin       rmax    p\n')
+   fprintf('        u        xmins       xmin       xmax    p\n')
    fprintf('    ------------------------------------------------\n')
    for j = 1:length(precs)
-      [u,rmins,rmin,rmax,p] = float_params(precs(j));
+      [u,xmins,xmin,xmax,p] = float_params(precs(j));
       fprintf('%s: %9.2e  %9.2e  %9.2e  %9.2e  %3.0f\n',...
-               precs(j),u,rmins,rmin,rmax,p)
+               precs(j),u,xmins,xmin,xmax,p)
    end
    clear u, return
 end   
@@ -59,10 +59,12 @@ elseif ismember(prec, {'d','double','fp64'})
 elseif ismember(prec, {'q','quadruple','fp128'})
     % Significand: 112 bits plus 1 hidden. Exponent: 15 bits.
     p = 113; emax = 16383;
+else 
+    error('Unrecognized argument')
 end
     
 emin = 1-emax; % For all formats.
-rmins = 2^emin * 2^(1-p);
-rmin = 2^emin;
-rmax = 2^emax * (2-2^(1-p));
+xmins = 2^emin * 2^(1-p);
+xmin = 2^emin;
+xmax = 2^emax * (2-2^(1-p));
 u = 2^(-p);
