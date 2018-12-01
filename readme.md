@@ -11,17 +11,19 @@ not computed at run time.
 The parameters are
 
 - the unit roundoff,
-- the smallest positive floating-point number (subnormal),
+- the smallest positive (subnormal) floating-point number,
 - the smallest positive normalized floating-point number,
 - the largest floating-point number,
 - the number of binary digits in the significand (including the
          implicit leading bit)
+
 and the arithmetics supported are 
+
 - bfloat16,
-- IEEE half precision,
-- IEEE single precision,
-- IEEE double precision,
-- IEEE quadruple precision.
+- IEEE half precision (fp16),
+- IEEE single precision (fp32),
+- IEEE double precision (fp64),
+- IEEE quadruple precision (fp128).
 
 License
 -------

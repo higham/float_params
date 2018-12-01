@@ -2,7 +2,7 @@ function [u,xmins,xmin,xmax,p] = float_params(prec)
 % FLOAT_PARAMS   Parameters for floating-point arithmetic.
 %   [u,rmins,rmin,rmax,p] = FLOAT_PARAMS(prec) returns 
 %     u:     the unit roundoff,
-%     xmins: the smallest positive floating-point number (subnormal),
+%     xmins: the smallest positive (subnormal) floating-point number,
 %     xmin:  the smallest positive normalized floating-point number,
 %     xmax:  the largest floating-point number,
 %     p:     the number of binary digits in the significand (including the
