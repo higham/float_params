@@ -1,21 +1,26 @@
-function [u,xmins,xmin,xmax,p] = float_params(prec)
-% FLOAT_PARAMS   Parameters for floating-point arithmetic.
-%   [u,rmins,rmin,rmax,p] = FLOAT_PARAMS(prec) returns 
+function [u,xmins,xmin,xmax,p,emin,emax] = float_params(prec)
+%FLOAT_PARAMS   Parameters for floating-point arithmetic.
+%   [u,xmins,xmin,xmax,p,emin,emax] = FLOAT_PARAMS(prec) returns 
 %     u:     the unit roundoff,
 %     xmins: the smallest positive (subnormal) floating-point number,
 %     xmin:  the smallest positive normalized floating-point number,
 %     xmax:  the largest floating-point number,
 %     p:     the number of binary digits in the significand (including the
 %            implicit leading bit),
+%     emin:   the minimum value of the exponent,
+%     emax:   the maximum value of the exponent,
 %   where prec is one of 
 %    'b', 'bfloat16'           - bfloat16,
 %    'h', 'half', 'fp16'       - IEEE half precision,
 %    's', 'single', 'fp32'     - IEEE single precision,
 %    'd', double', 'fp64'      - IEEE double precision (the default),
 %    'q', 'quadruple', 'fp128' - IEEE quadruple precision.
+%   For all these arithmetics the floating-point numbers have the form
+%   s * 2^e * d_0.d_1d_2...d_{t-1} where s = 1 or -1, e is the exponent
+%   and each d_i is 0 or 1, with d_0 = 1 for normalized numbers.
 %   With no input and output arguments, FLOAT_PARAMS prints a table showing
 %   all the parameters for all five precisions.
-%   Note: rmax and rmin are not representable in double precision for
+%   Note: xmax and xmin are not representable in double precision for
 %   'quad'.
 
 %   Author: Nicholas J. Higham.
@@ -32,12 +37,13 @@ function [u,xmins,xmin,xmax,p] = float_params(prec)
 
 if nargin < 1 && nargout < 1
    precs = 'bhsdq';
-   fprintf('        u        xmins       xmin       xmax    p\n')
-   fprintf('    ------------------------------------------------\n')
+   fprintf(['        u        xmins       xmin       xmax    p    emin    ' ...
+            'emax\n'])
+   fprintf('    -------------------------------------------------------------\n')
    for j = 1:length(precs)
-      [u,xmins,xmin,xmax,p] = float_params(precs(j));
-      fprintf('%s: %9.2e  %9.2e  %9.2e  %9.2e  %3.0f\n',...
-               precs(j),u,xmins,xmin,xmax,p)
+      [u,xmins,xmin,xmax,p,emin,emax] = float_params(precs(j));
+      fprintf('%s: %9.2e  %9.2e  %9.2e  %9.2e  %3.0f  %5.0f  %6.0f\n',...
+               precs(j),u,xmins,xmin,xmax,p,emin,emax)
    end
    clear u, return
 end   
