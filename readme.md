@@ -15,7 +15,7 @@ The parameters are
 - the smallest positive normalized floating-point number,
 - the largest floating-point number,
 - the number of binary digits in the significand (including the
-         implicit leading bit)
+         implicit leading bit),
 - the minimum value of the exponent,
 - the maximum value of the exponent
 
