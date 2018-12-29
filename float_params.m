@@ -1,4 +1,4 @@
-function [u,xmins,xmin,xmax,p,emin,emax] = float_params(prec)
+function [u,xmins,xmin,xmax,p,emins,emin,emax] = float_params(prec)
 %FLOAT_PARAMS   Parameters for floating-point arithmetic.
 %   [u,xmins,xmin,xmax,p,emin,emax] = FLOAT_PARAMS(prec) returns 
 %     u:     the unit roundoff,
@@ -7,8 +7,9 @@ function [u,xmins,xmin,xmax,p,emin,emax] = float_params(prec)
 %     xmax:  the largest floating-point number,
 %     p:     the number of binary digits in the significand (including the
 %            implicit leading bit),
-%     emin:   the minimum value of the exponent,
-%     emax:   the maximum value of the exponent,
+%     emins  exponent of xmins,
+%     emin:  exponent of xmin,
+%     emax:  exponent of xmax.
 %   where prec is one of 
 %    'b', 'bfloat16'           - bfloat16,
 %    'h', 'half', 'fp16'       - IEEE half precision,
@@ -21,7 +22,7 @@ function [u,xmins,xmin,xmax,p,emin,emax] = float_params(prec)
 %   With no input and output arguments, FLOAT_PARAMS prints a table showing
 %   all the parameters for all five precisions.
 %   Note: xmax and xmin are not representable in double precision for
-%   'quad'.
+%   'quadruple'.
 
 %   Author: Nicholas J. Higham.
 
@@ -29,11 +30,11 @@ function [u,xmins,xmin,xmax,p,emin,emax] = float_params(prec)
 % [1] IEEE Standard for Floating-Point Arithmetic, IEEE Std 754-2008 (revision 
 %      of IEEE Std 754-1985), 58, IEEE Computer Society, 2008; pages 8,
 %      13. https://ieeexplore.ieee.org/document/4610935
-% [2] Intel Corporation, BFLOAT16---hardware numerics definition,  Nov. 2018, ...
+% [2] Intel Corporation, BFLOAT16---hardware numerics definition,  Nov. 2018, 
 %      White paper. Document number 338302-001US.
 %      https://software.intel.com/en-us/download/bfloat16-hardware-numerics-definition}.
 % [3] https://stackoverflow.com/questions/44873802/what-is-tf-bfloat16-truncated-16-bit-floating-point
-% [4] https://www.wikiwand.com/en/Bfloat16_floating-point_format
+% [4] https://en.wikipedia.org/wiki/Bfloat16_floating-point_format
 
 if nargin < 1 && nargout < 1
    precs = 'bhsdq';
@@ -68,9 +69,10 @@ elseif ismember(prec, {'q','quadruple','fp128'})
 else 
     error('Unrecognized argument')
 end
-    
-emin = 1-emax; % For all formats.
-xmins = 2^emin * 2^(1-p);
+
+emin = 1-emax;            % Exponent of smallest normal number.
+emins = emin + 1 - p;     % Exponent of smallest subnormal number.
+xmins = 2^emins;
 xmin = 2^emin;
 xmax = 2^emax * (2-2^(1-p));
 u = 2^(-p);

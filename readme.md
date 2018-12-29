@@ -11,13 +11,14 @@ not computed at run time.
 The parameters are
 
 - the unit roundoff,
-- the smallest positive (subnormal) floating-point number,
-- the smallest positive normalized floating-point number,
-- the largest floating-point number,
+- the smallest positive (subnormal) floating-point number, xmins,
+- the smallest positive normalized floating-point number, xmin,
+- the largest floating-point number, xmax,
 - the number of binary digits in the significand (including the
-         implicit leading bit),
-- the minimum value of the exponent,
-- the maximum value of the exponent
+  implicit leading bit),
+- the exponent of xmins,
+- the exponent of xmin,
+- the exponent of xmax
 
 and the arithmetics supported are 
 
