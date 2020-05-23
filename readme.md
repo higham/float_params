@@ -24,11 +24,12 @@ and the arithmetics supported are
 
 - bfloat16,
 - IEEE half precision (fp16),
+- NVIDIA tf32,
 - IEEE single precision (fp32),
 - IEEE double precision (fp64),
 - IEEE quadruple precision (fp128).
 
-The code was developed in MATLAB R2018b and works with versions at least
+The code was developed in MATLAB R2020a and works with versions at least
 back to R2016b.
 
 License
