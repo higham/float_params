@@ -11,11 +11,15 @@ function [u,xmins,xmin,xmax,p,emins,emin,emax] = float_params(prec)
 %     emin:  exponent of xmin,
 %     emax:  exponent of xmax.
 %   where prec is one of 
+%    'q43', 'fp8-e4m3'       - NVIDIA quarter precision (4 exponent bits,
+%                              3 significand bits)
+%    'q52', 'fp8-e5m2'       - NVIDIA quarter precision (5 exponent bits,
+%                              2 significand bits)
 %    'b', 'bfloat16'           - bfloat16,
 %    'h', 'half', 'fp16'       - IEEE half precision,
 %    't', 'tf32'               - NVIDIA tf32,
 %    's', 'single', 'fp32'     - IEEE single precision,
-%    'd', double', 'fp64'      - IEEE double precision (the default),
+%    'd', 'double', 'fp64'     - IEEE double precision (the default),
 %    'q', 'quadruple', 'fp128' - IEEE quadruple precision.
 %   For all these arithmetics the floating-point numbers have the form
 %   s * 2^e * d_0.d_1d_2...d_{t-1} where s = 1 or -1, e is the exponent
@@ -37,24 +41,37 @@ function [u,xmins,xmin,xmax,p,emins,emin,emax] = float_params(prec)
 %     on Cloud TPUs, 2019.
 % [4] https://en.wikipedia.org/wiki/Bfloat16_floating-point_format.
 % [5] NVIDIA Corporation, NVIDIA A100 Tensor Core GPU Architecture, 2020.
+% [6] NVIDIA Corporation, NVIDIA Hopper Architecture In-Depth, 2022.
+%     https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/
 
 if nargin < 1 && nargout < 1
    precs = 'bhtsdq';
-   fprintf(['        u        xmins      xmin       xmax      p   ' ...
+   fprintf(['          u        xmins      xmin       xmax      p   ' ...
             ' emins     emin    emax\n'])
    fprintf('    ---------------------------------------------------------')
    fprintf('---------------\n')
-   for j = 1:length(precs)
-      [u,xmins,xmin,xmax,p,emins,emin,emax] = float_params(precs(j));
+   for j = -1:length(precs)
+      switch j
+        case -1, prec = 'q43';
+        case 0,  prec = 'q52';
+        otherwise,  prec = precs(j);
+      end
+      [u,xmins,xmin,xmax,p,emins,emin,emax] = float_params(prec);
       fprintf('%s: %9.2e  %9.2e  %9.2e  %9.2e  %3.0f  %7.0f  %7.0f  %6.0f\n',...
-               precs(j),u,xmins,xmin,xmax,p,emins,emin,emax)
+               pad(prec,3,'left'),u,xmins,xmin,xmax,p,emins,emin,emax)
    end
    clear u, return
 end   
 
 if nargin < 1, prec = 'd'; end
 
-if ismember(prec, {'b','bfloat16'})
+if ismember(prec, {'q43','fp8-e4m3'})
+    % Significand: 3 bits plus 1 hidden. Exponent: 4 bits.
+    p = 4; emax = 7;
+elseif ismember(prec, {'q52','fp8-e5m2'})
+    % Significand: 2 bits plus 1 hidden. Exponent: 5 bits.
+    p = 3; emax = 15;
+elseif ismember(prec, {'b','bfloat16'})
     % Significand: 7 bits plus 1 hidden. Exponent: 8 bits.
     p = 8; emax = 127;  
 elseif ismember(prec, {'h','half','fp16'})

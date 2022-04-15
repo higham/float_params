@@ -22,6 +22,7 @@ The parameters are
 
 and the arithmetics supported are 
 
+- NVIDIA quarter precision ('fp8-e4m3', 'fp8-e5m2'),
 - bfloat16,
 - IEEE half precision (fp16),
 - NVIDIA tf32,
